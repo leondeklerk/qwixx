@@ -21,6 +21,10 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 
+setTimeout(() => {
+    /* */
+}, 100000);
+
 new Vue({
     render: (h) => h(App)
 }).$mount("#app");
