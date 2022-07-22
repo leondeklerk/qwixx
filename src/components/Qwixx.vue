@@ -17,10 +17,8 @@
                 }"
             >
                 <div v-if="cell == 13" @click="select(row, cell)" class="icon-wrapper">
-                    <!-- <p > -->
                     <font-awesome-icon v-if="isLocked(row)" icon="fa-solid fa-lock" />
                     <font-awesome-icon v-else icon="fa-solid fa-lock-open" />
-                    <!-- </p> -->
                 </div>
                 <div v-else class="text-wrapper" @click="select(row, cell)">
                     <font-awesome-icon v-if="isSelected(row, cell)" icon="fa-solid fa-times" />
@@ -31,7 +29,7 @@
         <div class="row no-gutters">
             <div class="col"></div>
             <div class="col">
-                <span>MISLUKTE WORPEN</span>
+                <span>MISLUKTE WORPEN (-5)</span>
             </div>
             <div class="col">
                 <span v-if="complete">TOTAAL</span>
