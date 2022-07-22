@@ -25,4 +25,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: leondeklerk/personal:bleon
+        tags: leondeklerk/qwixx
