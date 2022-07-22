@@ -3,6 +3,7 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "bootstrap/dist/css/bootstrap.css";
+import NoSleep from "nosleep.js";
 
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -21,9 +22,16 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 
-setTimeout(() => {
-    /* */
-}, 100000);
+const noSleep = new NoSleep();
+
+document.addEventListener(
+    "click",
+    function enableNoSleep() {
+        document.removeEventListener("click", enableNoSleep, false);
+        noSleep.enable();
+    },
+    false
+);
 
 new Vue({
     render: (h) => h(App)
