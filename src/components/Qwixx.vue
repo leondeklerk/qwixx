@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid h-50" :class="{ complete: complete }">
+    <div class="container-fluid" :class="{ complete: complete }">
         <div
             v-for="row in rows"
             :key="row"
@@ -344,12 +344,12 @@ export default class Qwixx extends Vue {
     justify-content: center;
 }
 
-.container > :nth-child(2n).locked {
+.container-fluid > :nth-child(2n).locked {
     background: gray;
     cursor: cursor;
 }
 
-.container > .locked {
+.container-fluid > .locked {
     background: #3b3b40;
 }
 
