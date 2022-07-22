@@ -60,6 +60,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import Awake from "./awake";
 
 @Component
 export default class Qwixx extends Vue {
@@ -99,6 +100,8 @@ export default class Qwixx extends Vue {
         12: 78
     };
 
+    first = true;
+
     get count() {
         let total = 0;
         total += this.penalCount * -5;
@@ -129,6 +132,7 @@ export default class Qwixx extends Vue {
         this.complete = false;
         this.penalCount = 0;
         this.$refs.resetButton.blur();
+        this.first = false;
     }
 
     generate() {
@@ -162,6 +166,11 @@ export default class Qwixx extends Vue {
     }
 
     select(row: number, cell: number) {
+        if (this.first) {
+            this.first = false;
+            new Awake().initialize();
+        }
+
         if (this.complete) {
             return;
         }
