@@ -73,6 +73,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import Awake from "./awake";
 import BoardFactory, { Column, Pass, Row } from "./board";
+import NoSleep from "nosleep.js";
+
+var noSleep = new NoSleep();
 
 @Component
 export default class Qwixx extends Vue {
@@ -136,7 +139,6 @@ export default class Qwixx extends Vue {
             pass.checked = false;
         });
         this.$refs.resetButton.blur();
-        this.first = false;
         this.cacheState();
     }
 
@@ -163,7 +165,8 @@ export default class Qwixx extends Vue {
     select(row: Row, column: Column) {
         if (this.first) {
             this.first = false;
-            new Awake().initialize();
+            noSleep.enable();
+            // new Awake().initialize();
         }
         if (this.state.complete) {
             return;
