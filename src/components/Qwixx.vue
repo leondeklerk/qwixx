@@ -127,6 +127,7 @@ export default class Qwixx extends Vue {
         this.state.complete = false;
         this.state.rows.forEach((row: Row) => {
             row.locked = false;
+            row.closed = false;
             row.columns.forEach((column: Column) => {
                 column.selected = false;
             });
