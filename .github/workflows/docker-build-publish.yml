@@ -26,4 +26,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: leondeklerk/qwixx:latest,leondeklerk/qwixx:${{ github.SHA }}
+        tags: leondeklerk/qwixx:${{ github.SHA }},leondeklerk/qwixx:latest
