@@ -1,0 +1,287 @@
+{
+    "complete": false,
+    "rows": [
+        {
+            "columns": [
+                {
+                    "isLock": false,
+                    "value": 2,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 3,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 4,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 5,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 6,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 7,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 8,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 9,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 10,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 11,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 12,
+                    "selected": false
+                },
+                {
+                    "isLock": true,
+                    "value": 13,
+                    "selected": false
+                }
+            ],
+            "locked": false,
+            "color": "red",
+            "closed": false
+        },
+        {
+            "columns": [
+                {
+                    "isLock": false,
+                    "value": 2,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 3,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 4,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 5,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 6,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 7,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 8,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 9,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 10,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 11,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 12,
+                    "selected": false
+                },
+                {
+                    "isLock": true,
+                    "value": 13,
+                    "selected": false
+                }
+            ],
+            "locked": false,
+            "color": "yellow",
+            "closed": false
+        },
+        {
+            "columns": [
+                {
+                    "isLock": false,
+                    "value": 12,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 11,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 10,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 9,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 8,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 7,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 6,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 5,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 4,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 3,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 2,
+                    "selected": false
+                },
+                {
+                    "isLock": true,
+                    "value": 13,
+                    "selected": false
+                }
+            ],
+            "locked": false,
+            "color": "green",
+            "closed": false
+        },
+        {
+            "columns": [
+                {
+                    "isLock": false,
+                    "value": 12,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 11,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 10,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 9,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 8,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 7,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 6,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 5,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 4,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 3,
+                    "selected": false
+                },
+                {
+                    "isLock": false,
+                    "value": 2,
+                    "selected": false
+                },
+                {
+                    "isLock": true,
+                    "value": 13,
+                    "selected": false
+                }
+            ],
+            "locked": false,
+            "color": "blue",
+            "closed": false
+        }
+    ],
+    "passes": [
+        {
+            "checked": false
+        },
+        {
+            "checked": false
+        },
+        {
+            "checked": false
+        },
+        {
+            "checked": false
+        }
+    ]
+}

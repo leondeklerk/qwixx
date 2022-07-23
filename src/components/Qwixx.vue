@@ -1,28 +1,37 @@
 <template>
-    <div class="container-fluid" :class="{ complete: complete }">
+    <div class="container-fluid" :class="{ complete: state.complete }">
         <div
-            v-for="row in rows"
-            :key="row"
+            v-for="(row, rIndex) in state.rows"
+            :key="rIndex"
             class="row no-gutters"
-            :class="{ red: row == 0, yellow: row == 1, green: row == 2, blue: row == 3, locked: isLocked(row) }"
+            :class="{
+                red: row.color === 'red',
+                yellow: row.color === 'yellow',
+                green: row.color === 'blue',
+                blue: row.color === 'green',
+                locked: row.locked || row.closed
+            }"
         >
             <div
-                v-for="cell in getCells(row)"
-                :key="cell"
+                v-for="(col, cIndex) in row.columns"
+                :key="cIndex"
                 class="col-1"
                 :class="{
-                    selected: isSelected(row, cell),
-                    hover: isSelected(row, cell) === '' && !isLocked(row) && !complete,
-                    'end-cell': cell === 13
+                    selected: col.selected,
+                    hover: !col.selected && !row.locked && !row.closed && !state.complete,
+                    'end-cell': col.isLock
                 }"
             >
-                <div v-if="cell == 13" @click="select(row, cell)" class="icon-wrapper">
-                    <font-awesome-icon v-if="isLocked(row)" icon="fa-solid fa-lock" />
+                <div v-if="col.isLock" @click="select(row, col)" class="icon-wrapper">
+                    <font-awesome-icon v-if="row.locked" icon="fa-solid fa-lock" />
                     <font-awesome-icon v-else icon="fa-solid fa-lock-open" />
                 </div>
-                <div v-else class="text-wrapper" @click="select(row, cell)">
-                    <font-awesome-icon v-if="isSelected(row, cell)" icon="fa-solid fa-times" />
-                    <span v-else class="text">{{ cell }}</span>
+                <div v-if="col.isLock" @click="closeRow(row)" class="icon-wrapper">
+                    <font-awesome-icon icon="fa-solid fa-slash" />
+                </div>
+                <div v-else class="text-wrapper" @click="select(row, col)">
+                    <font-awesome-icon v-if="col.selected" icon="fa-solid fa-times" />
+                    <span v-else class="text">{{ col.value }}</span>
                 </div>
             </div>
         </div>
@@ -32,7 +41,7 @@
                 <span>MISLUKTE WORPEN (-5)</span>
             </div>
             <div class="col">
-                <span v-if="complete">TOTAAL</span>
+                <span v-if="state.complete">TOTAAL</span>
             </div>
         </div>
         <div class="row no-gutters">
@@ -40,18 +49,20 @@
                 <button ref="resetButton" type="button" class="btn btn-danger" @click="reset">Reset</button>
             </div>
             <div class="col">
-                <div v-for="index in 4" :key="index" class="d-inline-flex p-2">
+                <div v-for="(pass, index) in this.state.passes" :key="index" class="d-inline-flex p-2">
                     <input
-                        @input="addPenalty(index)"
-                        v-model="checked[index]"
-                        :disabled="checked[index] || complete"
+                        @input="addPass(pass)"
+                        v-model="pass.checked"
+                        :disabled="pass.checked || state.complete"
                         type="checkbox"
                         class="form-check-input"
                     />
                 </div>
             </div>
             <div class="col">
-                <button v-if="!complete" ref="generateButton" type="button" class="text-truncate btn btn-primary" @click="generate">Score</button>
+                <button v-if="!state.complete" ref="generateButton" type="button" class="text-truncate btn btn-primary" @click="generate">
+                    Score
+                </button>
                 <span v-else>{{ count }}</span>
             </div>
         </div>
@@ -59,8 +70,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import Awake from "./awake";
+import BoardFactory, { Column, Pass, Row } from "./board";
 
 @Component
 export default class Qwixx extends Vue {
@@ -69,21 +81,7 @@ export default class Qwixx extends Vue {
         generateButton: HTMLButtonElement;
     };
 
-    rows = [0, 1, 2, 3];
-
-    state: { [key: string]: boolean } = {};
-
-    counts: { [key: number]: number } = {};
-
-    locked: { [key: number]: boolean } = {};
-
-    checked: { [key: number]: boolean } = {};
-
-    lockedCount = 0;
-
-    complete = false;
-
-    penalCount = 0;
+    state = localStorage["qwixx"] ? JSON.parse(localStorage["qwixx"]) : new BoardFactory().create("default");
 
     points: { [key: number]: number } = {
         1: 1,
@@ -104,17 +102,19 @@ export default class Qwixx extends Vue {
 
     get count() {
         let total = 0;
-        total += this.penalCount * -5;
+        total += this.state.passes.filter((pass: Pass) => pass.checked).length * -5;
 
-        this.rows.forEach((row) => {
+        this.state.rows.forEach((row: Row) => {
             let pointScore = 0;
-            if (this.locked[row]) {
+            if (row.locked) {
                 pointScore += 1;
             }
 
-            if (this.counts[row]) {
-                pointScore += this.counts[row];
-            }
+            row.columns.forEach((col: Column) => {
+                if (col.selected) {
+                    pointScore += 1;
+                }
+            });
 
             if (pointScore) {
                 total += this.points[pointScore];
@@ -124,115 +124,78 @@ export default class Qwixx extends Vue {
     }
 
     reset() {
-        this.state = {};
-        this.counts = {};
-        this.locked = {};
-        this.checked = {};
-        this.lockedCount = 0;
-        this.complete = false;
-        this.penalCount = 0;
+        this.state.complete = false;
+        this.state.rows.forEach((row: Row) => {
+            row.locked = false;
+            row.columns.forEach((column: Column) => {
+                column.selected = false;
+            });
+        });
+        this.state.passes.forEach((pass: Pass) => {
+            pass.checked = false;
+        });
         this.$refs.resetButton.blur();
         this.first = false;
+        this.cacheState();
     }
 
     generate() {
-        this.complete = true;
+        this.state.complete = true;
         this.$refs.generateButton.blur();
+        this.cacheState();
     }
 
-    addPenalty(index: number) {
-        Vue.set(this.checked, index, true);
-        this.penalCount += 1;
-        if (this.penalCount == 4) {
-            this.complete = true;
+    addPass(pass: Pass) {
+        pass.checked = true;
+        if (this.state.passes.filter((pass: Pass) => pass.checked).length === 4) {
+            this.state.complete = true;
+        }
+        this.cacheState();
+    }
+
+    closeRow(row: Row) {
+        if (!row.locked) {
+            row.closed = !row.closed;
         }
     }
 
-    isSelected(row: number, cell: number) {
-        if (this.state[`${row},${cell}`]) {
-            return "selected";
-        } else {
-            return "";
-        }
-    }
-
-    @Prop() private msg!: string;
-
-    isLocked(row: number) {
-        if (this.locked[row]) {
-            return true;
-        }
-        return false;
-    }
-
-    select(row: number, cell: number) {
+    select(row: Row, column: Column) {
         if (this.first) {
             this.first = false;
             new Awake().initialize();
         }
-
-        if (this.complete) {
+        if (this.state.complete) {
             return;
         }
-
-        if (this.locked[row]) {
+        if (row.locked || row.closed) {
             return;
         }
-        if (cell === 13) {
-            if (this.counts[row] < 5) {
+        if (column.isLock) {
+            let selectedCols = row.columns.filter((rowCol: Column) => rowCol.selected);
+            if (selectedCols.length < 5) {
+                return;
+            }
+            let last = row.columns.filter((value: Column, index: number) => index === 10);
+            if (last && last[0] && !last[0].selected) {
                 return;
             }
 
-            if ((row < 2 && !this.state[`${row},12`]) || (row > 1 && !this.state[`${row},2`])) {
-                return;
+            column.selected = true;
+            row.locked = true;
+            let closedRows = this.state.rows.filter((value: Row) => value.locked);
+            if (closedRows.length === 2) {
+                this.state.complete = true;
             }
-
-            Vue.set(this.locked, row, true);
-            this.lockedCount += 1;
-
-            if (this.lockedCount === 2) {
-                this.complete = true;
-            }
+            this.cacheState();
             return;
         }
 
-        if (!this.state[`${row},${cell}`]) {
-            if (this.counts[row]) {
-                this.counts[row] += 1;
-            } else {
-                Vue.set(this.counts, row, 1);
-            }
-            Vue.set(this.state, `${row},${cell}`, true);
-        } else {
-            if (this.counts[row]) {
-                this.counts[row] -= 1;
-            } else {
-                Vue.set(this.counts, row, 0);
-            }
-            Vue.set(this.state, `${row},${cell}`, false);
-        }
+        column.selected = !column.selected;
+        this.cacheState();
     }
 
-    getCells(row: number) {
-        let cells = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-        if (row < 2) {
-            return cells.concat([13]);
-        } else {
-            return cells.concat().reverse().concat([13]);
-        }
-    }
-
-    getColor(row: number) {
-        switch (row) {
-            case 0:
-                return "red";
-            case 1:
-                return "yellow";
-            case 2:
-                return "green";
-            default:
-                return "blue";
-        }
+    cacheState() {
+        localStorage.setItem("qwixx", JSON.stringify(this.state));
     }
 }
 </script>
@@ -261,6 +224,10 @@ export default class Qwixx extends Vue {
     aspect-ratio: 1/1;
 }
 
+.end-cell > :nth-child(even).icon-wrapper {
+    margin-left: 5%;
+}
+
 .selected {
     .text-wrapper {
         background: #5a5a65;
@@ -275,8 +242,14 @@ export default class Qwixx extends Vue {
     }
 }
 
-.hover:hover {
-    opacity: 80%;
+.hover {
+    .text-wrapper:hover {
+        opacity: 80%;
+    }
+
+    .icon-wrapper:hover {
+        opacity: 80%;
+    }
 }
 
 .row {
