@@ -49,7 +49,7 @@
                 <button ref="resetButton" type="button" class="btn btn-danger" @click="reset">Reset</button>
             </div>
             <div class="col">
-                <div v-for="(pass, index) in this.state.passes" :key="index" class="d-inline-flex p-2">
+                <div v-for="(pass, index) in state.passes" :key="index" class="d-inline-flex p-2">
                     <input
                         @input="addPass(pass)"
                         v-model="pass.checked"
@@ -71,7 +71,6 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Awake from "./awake";
 import BoardFactory, { Column, Pass, Row } from "./board";
 import NoSleep from "nosleep.js";
 
@@ -166,7 +165,6 @@ export default class Qwixx extends Vue {
         if (this.first) {
             this.first = false;
             noSleep.enable();
-            // new Awake().initialize();
         }
         if (this.state.complete) {
             return;
@@ -204,7 +202,6 @@ export default class Qwixx extends Vue {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .complete {
     cursor: default !important;
