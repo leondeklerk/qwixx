@@ -11,6 +11,7 @@ export default class BoardFactory {
 }
 
 export interface Column {
+    index: number;
     isLock: boolean;
     selected: boolean;
     value: number;
@@ -24,6 +25,7 @@ export interface Row {
 }
 
 export interface Board {
+    version: string;
     rows: Row[];
     complete: boolean;
     passes: Pass[];

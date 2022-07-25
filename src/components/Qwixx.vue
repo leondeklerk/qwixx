@@ -125,6 +125,10 @@ export default class Qwixx extends Vue {
         return total;
     }
 
+    created() {
+        this.updateCache();
+    }
+
     reset() {
         this.state.complete = false;
         this.state.rows.forEach((row: Row) => {
@@ -175,10 +179,12 @@ export default class Qwixx extends Vue {
         if (column.isLock) {
             let selectedCols = row.columns.filter((rowCol: Column) => rowCol.selected);
             if (selectedCols.length < 5) {
+                this.showWarning("Requires at least five selected squares in this row");
                 return;
             }
-            let last = row.columns.filter((value: Column, index: number) => index === 10);
-            if (last && last[0] && !last[0].selected) {
+            let last = row.columns[10];
+            if (last && !last.selected) {
+                this.showWarning("Requires the last square to be selected");
                 return;
             }
 
@@ -192,12 +198,46 @@ export default class Qwixx extends Vue {
             return;
         }
 
+        let higherLocked = row.columns.some((col: Column) => {
+            return col.index > column.index && col.selected;
+        });
+        if (!column.selected && higherLocked) {
+            this.showWarning("Can only select succeeding squares");
+            return;
+        }
         column.selected = !column.selected;
         this.cacheState();
     }
 
     cacheState() {
         localStorage.setItem("qwixx", JSON.stringify(this.state));
+    }
+
+    updateCache() {
+        let board = new BoardFactory().create("default");
+        if (!this.state.version || this.state.version !== board) {
+            this.updateObject(this.state, board as unknown as Record<string, unknown>);
+            this.cacheState();
+        }
+    }
+
+    updateObject(old: Record<string, unknown>, updated: Record<string, unknown>) {
+        Object.keys(updated).forEach((key: string) => {
+            if (!Object.keys(old).includes(key)) {
+                Vue.set(old, key, updated[key]);
+            }
+            if (typeof updated[key] === "object") {
+                this.updateObject(old[key] as Record<string, unknown>, updated[key] as Record<string, unknown>);
+            }
+        });
+    }
+
+    showWarning(message: string) {
+        Vue.$toast.open({
+            message: message,
+            type: "warning",
+            position: "bottom"
+        });
     }
 }
 </script>

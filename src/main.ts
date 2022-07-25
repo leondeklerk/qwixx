@@ -2,6 +2,8 @@ import Vue from "vue";
 import App from "./App.vue";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "bootstrap/dist/css/bootstrap.css";
+import VueToast from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -17,6 +19,8 @@ library.add(faLockOpen, faLock, faTimes, faSlash);
 
 /* add font awesome icon component */
 Vue.component("font-awesome-icon", FontAwesomeIcon);
+
+Vue.use(VueToast);
 
 Vue.config.productionTip = false;
 
