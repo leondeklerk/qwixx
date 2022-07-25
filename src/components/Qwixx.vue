@@ -74,7 +74,7 @@ import { Component, Vue } from "vue-property-decorator";
 import BoardFactory, { Column, Pass, Row } from "./board";
 import NoSleep from "nosleep.js";
 
-var noSleep = new NoSleep();
+const noSleep = new NoSleep();
 
 @Component
 export default class Qwixx extends Vue {
