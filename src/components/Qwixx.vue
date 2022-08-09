@@ -72,9 +72,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import BoardFactory, { Column, Pass, Row } from "./board";
-import NoSleep from "nosleep.js";
-
-const noSleep = new NoSleep();
 
 @Component
 export default class Qwixx extends Vue {
@@ -99,8 +96,6 @@ export default class Qwixx extends Vue {
         11: 66,
         12: 78
     };
-
-    first = true;
 
     get count() {
         let total = 0;
@@ -166,10 +161,6 @@ export default class Qwixx extends Vue {
     }
 
     select(row: Row, column: Column) {
-        if (this.first) {
-            this.first = false;
-            noSleep.enable();
-        }
         if (this.state.complete) {
             return;
         }
