@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <Qwixx />
+        <qwixx />
     </div>
 </template>
 
@@ -19,15 +19,17 @@ export default class App extends Vue {
     // @ts-ignore
     wakeLock: WakeLock | null = null;
     /* eslint-enable */
-
     noSleep: NoSleep | null = null;
-    stayWake: number | null = null;
-
-    count = 0;
-    err: any;
+    unsupported = false;
 
     async created() {
+        // Apple devices can only support a good experience with the wake lock API, which currently does not exist.
+        this.unsupported = /iPhone|iPod|iPad|Macintosh/i.test(navigator.userAgent);
         if ("wakeLock" in navigator) {
+            if (this.unsupported) {
+                this.unsupported = false;
+            }
+
             try {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
@@ -39,22 +41,14 @@ export default class App extends Vue {
                 document.addEventListener("visibilityChange", this.onVisibilityChange);
             } catch (err) {
                 console.log("WakeLock failure:", err);
-                this.err = err;
             }
-        } else if (navigator.vendor === "Apple Computer, Inc.") {
-            this.stayWake = setInterval(() => {
-                // eslint-disable-next-line no-self-assign
-                location.href = location.href;
-                window.setTimeout(window.stop, 0);
-            }, 30000);
-        } else {
+        } else if (!this.unsupported) {
             this.noSleep = new NoSleep();
             document.addEventListener("click", this.setNoSleep);
         }
     }
 
     setNoSleep() {
-        this.count += 1;
         if (this.noSleep && !this.noSleep.isEnabled) {
             this.noSleep.enable();
         }
@@ -77,10 +71,6 @@ export default class App extends Vue {
 
         if (this.noSleep) {
             this.noSleep.disable();
-        }
-
-        if (this.stayWake) {
-            clearInterval(this.stayWake);
         }
 
         document.removeEventListener("visibilitychange", this.onVisibilityChange);
