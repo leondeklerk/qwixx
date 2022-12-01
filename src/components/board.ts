@@ -10,27 +10,27 @@ export default class BoardFactory {
     }
 }
 
-export interface Column {
+export type Column = {
     index: number;
     isLock: boolean;
     selected: boolean;
     value: number;
-}
+};
 
-export interface Row {
+export type Row = {
     columns: Column[];
     color: string;
     locked: boolean;
     closed: boolean;
-}
+};
 
-export interface Board {
+export type Board = {
     version: string;
     rows: Row[];
     complete: boolean;
     passes: Pass[];
-}
+};
 
-export interface Pass {
+export type Pass = {
     checked: boolean;
-}
+};

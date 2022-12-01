@@ -9,7 +9,7 @@
                 yellow: row.color === 'yellow',
                 green: row.color === 'blue',
                 blue: row.color === 'green',
-                locked: row.locked || row.closed
+                locked: row.locked || row.closed,
             }"
         >
             <div
@@ -19,7 +19,7 @@
                 :class="{
                     selected: col.selected,
                     hover: !col.selected && !row.locked && !row.closed && !state.complete,
-                    'end-cell': col.isLock
+                    'end-cell': col.isLock,
                 }"
             >
                 <div v-if="col.isLock" @click="select(row, col)" class="icon-wrapper">
@@ -69,171 +69,168 @@
     </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import BoardFactory, { Column, Pass, Row } from "./board";
+<script setup lang="ts">
+import { computed, reactive, ref } from "vue";
+import BoardFactory from "./board";
+import type { Column, Pass, Row, Board } from "./board";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
-@Component
-export default class Qwixx extends Vue {
-    $refs!: {
-        resetButton: HTMLButtonElement;
-        generateButton: HTMLButtonElement;
-    };
+let state = reactive<Board>(localStorage["qwixx"] ? JSON.parse(localStorage["qwixx"]) : new BoardFactory().create("default"));
 
-    state = localStorage["qwixx"] ? JSON.parse(localStorage["qwixx"]) : new BoardFactory().create("default");
+let points: { [key: number]: number } = {
+    1: 1,
+    2: 3,
+    3: 6,
+    4: 10,
+    5: 15,
+    6: 21,
+    7: 28,
+    8: 36,
+    9: 45,
+    10: 55,
+    11: 66,
+    12: 78,
+};
 
-    points: { [key: number]: number } = {
-        1: 1,
-        2: 3,
-        3: 6,
-        4: 10,
-        5: 15,
-        6: 21,
-        7: 28,
-        8: 36,
-        9: 45,
-        10: 55,
-        11: 66,
-        12: 78
-    };
+let count = computed(() => {
+    let total = 0;
+    total += state.passes.filter((pass: Pass) => pass.checked).length * -5;
 
-    get count() {
-        let total = 0;
-        total += this.state.passes.filter((pass: Pass) => pass.checked).length * -5;
+    state.rows.forEach((row: Row) => {
+        let pointScore = 0;
+        if (row.locked) {
+            pointScore += 1;
+        }
 
-        this.state.rows.forEach((row: Row) => {
-            let pointScore = 0;
-            if (row.locked) {
+        row.columns.forEach((col: Column) => {
+            if (col.selected) {
                 pointScore += 1;
             }
-
-            row.columns.forEach((col: Column) => {
-                if (col.selected) {
-                    pointScore += 1;
-                }
-            });
-
-            if (pointScore) {
-                total += this.points[pointScore];
-            }
         });
-        return total;
-    }
 
-    created() {
-        this.updateCache();
-    }
-
-    reset() {
-        this.state.complete = false;
-        this.state.rows.forEach((row: Row) => {
-            row.locked = false;
-            row.closed = false;
-            row.columns.forEach((column: Column) => {
-                column.selected = false;
-            });
-        });
-        this.state.passes.forEach((pass: Pass) => {
-            pass.checked = false;
-        });
-        this.$refs.resetButton.blur();
-        this.cacheState();
-    }
-
-    generate() {
-        this.state.complete = true;
-        this.$refs.generateButton.blur();
-        this.cacheState();
-    }
-
-    addPass(pass: Pass) {
-        pass.checked = true;
-        if (this.state.passes.filter((pass: Pass) => pass.checked).length === 4) {
-            this.state.complete = true;
+        if (pointScore) {
+            total += points[pointScore];
         }
-        this.cacheState();
-    }
+    });
+    return total;
+});
 
-    closeRow(row: Row) {
-        if (!row.locked) {
-            row.closed = !row.closed;
-        }
-    }
+const $toast = useToast();
+const resetButton = ref<HTMLButtonElement | null>(null);
+const generateButton = ref<HTMLButtonElement | null>(null);
 
-    select(row: Row, column: Column) {
-        if (this.state.complete) {
+updateCache();
+
+function reset() {
+    state.complete = false;
+    state.rows.forEach((row: Row) => {
+        row.locked = false;
+        row.closed = false;
+        row.columns.forEach((column: Column) => {
+            column.selected = false;
+        });
+    });
+    state.passes.forEach((pass: Pass) => {
+        pass.checked = false;
+    });
+    resetButton.value?.blur();
+    cacheState();
+}
+
+function generate() {
+    state.complete = true;
+    generateButton.value?.blur();
+    cacheState();
+}
+
+function addPass(pass: Pass) {
+    pass.checked = true;
+    if (state.passes.filter((pass: Pass) => pass.checked).length === 4) {
+        state.complete = true;
+    }
+    cacheState();
+}
+
+function closeRow(row: Row) {
+    if (!row.locked) {
+        row.closed = !row.closed;
+    }
+}
+
+function select(row: Row, column: Column) {
+    if (state.complete) {
+        return;
+    }
+    if (row.locked || row.closed) {
+        return;
+    }
+    if (column.isLock) {
+        let selectedCols = row.columns.filter((rowCol: Column) => rowCol.selected);
+        if (selectedCols.length < 5) {
+            showWarning("Requires at least five selected squares in this row");
             return;
         }
-        if (row.locked || row.closed) {
-            return;
-        }
-        if (column.isLock) {
-            let selectedCols = row.columns.filter((rowCol: Column) => rowCol.selected);
-            if (selectedCols.length < 5) {
-                this.showWarning("Requires at least five selected squares in this row");
-                return;
-            }
-            let last = row.columns[10];
-            if (last && !last.selected) {
-                this.showWarning("Requires the last square to be selected");
-                return;
-            }
-
-            column.selected = true;
-            row.locked = true;
-            let closedRows = this.state.rows.filter((value: Row) => value.locked);
-            if (closedRows.length === 2) {
-                this.state.complete = true;
-            }
-            this.cacheState();
+        let last = row.columns[10];
+        if (last && !last.selected) {
+            showWarning("Requires the last square to be selected");
             return;
         }
 
-        let higherLocked = row.columns.some((col: Column) => {
-            return col.index > column.index && col.selected;
-        });
-        if (!column.selected && higherLocked) {
-            this.showWarning("Can only select succeeding squares");
-            return;
+        column.selected = true;
+        row.locked = true;
+        let closedRows = state.rows.filter((value: Row) => value.locked);
+        if (closedRows.length === 2) {
+            state.complete = true;
         }
-        column.selected = !column.selected;
-        this.cacheState();
+        cacheState();
+        return;
     }
 
-    cacheState() {
-        localStorage.setItem("qwixx", JSON.stringify(this.state));
+    let higherLocked = row.columns.some((col: Column) => {
+        return col.index > column.index && col.selected;
+    });
+    if (!column.selected && higherLocked) {
+        showWarning("Can only select succeeding squares");
+        return;
     }
+    column.selected = !column.selected;
+    cacheState();
+}
 
-    updateCache() {
-        let board = new BoardFactory().create("default");
-        if (!this.state.version || this.state.version !== board) {
-            this.updateObject(this.state, board as unknown as Record<string, unknown>);
-            this.cacheState();
+function cacheState() {
+    localStorage.setItem("qwixx", JSON.stringify(state));
+}
+
+function updateCache() {
+    let board = new BoardFactory().create("default");
+    if (!state.version || state.version !== board.version) {
+        updateObject(state, board as unknown as Record<string, unknown>);
+        cacheState();
+    }
+}
+
+function updateObject(old: Record<string, unknown>, updated: Record<string, unknown>) {
+    Object.keys(updated).forEach((key: string) => {
+        if (!Object.keys(old).includes(key)) {
+            old[key] = updated[key];
         }
-    }
+        if (typeof updated[key] === "object") {
+            updateObject(old[key] as Record<string, unknown>, updated[key] as Record<string, unknown>);
+        }
+    });
+}
 
-    updateObject(old: Record<string, unknown>, updated: Record<string, unknown>) {
-        Object.keys(updated).forEach((key: string) => {
-            if (!Object.keys(old).includes(key)) {
-                Vue.set(old, key, updated[key]);
-            }
-            if (typeof updated[key] === "object") {
-                this.updateObject(old[key] as Record<string, unknown>, updated[key] as Record<string, unknown>);
-            }
-        });
-    }
-
-    showWarning(message: string) {
-        Vue.$toast.open({
-            message: message,
-            type: "warning",
-            position: "bottom"
-        });
-    }
+function showWarning(message: string) {
+    $toast.open({
+        message: message,
+        type: "warning",
+        position: "bottom",
+    });
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .complete {
     cursor: default !important;
 }

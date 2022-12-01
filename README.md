@@ -1,2 +1,3 @@
-# qwixx
+# Qwixx
+
 Qwixx sheet web implementation

@@ -1,29 +1,17 @@
-import Vue from "vue";
-import App from "./App.vue";
-import "bootstrap-vue/dist/bootstrap-vue.css";
-import "bootstrap/dist/css/bootstrap.css";
-import VueToast from "vue-toast-notification";
-import "vue-toast-notification/dist/theme-sugar.css";
-
-/* import the fontawesome core */
+import { createApp } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
-
-/* import font awesome icon component */
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
-/* import specific icons */
 import { faLockOpen, faLock, faTimes, faSlash } from "@fortawesome/free-solid-svg-icons";
 
-/* add icons to the library */
+import App from "./App.vue";
+
+import "bootstrap/dist/css/bootstrap.css";
+import "./assets/main.css";
+
+const app = createApp(App);
+
+/* Font Awesome*/
 library.add(faLockOpen, faLock, faTimes, faSlash);
+app.component("FontAwesomeIcon", FontAwesomeIcon);
 
-/* add font awesome icon component */
-Vue.component("font-awesome-icon", FontAwesomeIcon);
-
-Vue.use(VueToast);
-
-Vue.config.productionTip = false;
-
-new Vue({
-    render: (h) => h(App)
-}).$mount("#app");
+app.mount("#app");

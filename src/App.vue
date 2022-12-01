@@ -1,94 +1,75 @@
 <template>
-    <div id="app">
-        <qwixx />
-    </div>
+    <QwixxBoard />
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Qwixx from "./components/Qwixx.vue";
+<script setup lang="ts">
+import { onBeforeUnmount } from "vue";
 import NoSleep from "nosleep.js";
+import QwixxBoard from "./components/QwixxBoard.vue";
 
-@Component({
-    components: {
-        Qwixx
-    }
-})
-export default class App extends Vue {
-    /* eslint-disable */
-    // @ts-ignore
-    wakeLock: WakeLock | null = null;
-    /* eslint-enable */
-    noSleep: NoSleep | null = null;
-    unsupported = false;
+// WakeLock type not properly supported yet
+type WakeLock = any;
 
-    async created() {
-        // Apple devices can only support a good experience with the wake lock API, which currently does not exist.
-        this.unsupported = /iPhone|iPod|iPad|Macintosh/i.test(navigator.userAgent);
-        if ("wakeLock" in navigator) {
-            if (this.unsupported) {
-                this.unsupported = false;
-            }
+let wakeLock: WakeLock | null = null;
+let noSleep: NoSleep | null = null;
+let unsupported = false;
 
-            try {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                this.wakeLock = await navigator.wakeLock.request("screen");
-                this.wakeLock.addEventListener("release", () => {
-                    this.wakeLock = null;
-                });
+setupWakeLock();
 
-                document.addEventListener("visibilityChange", this.onVisibilityChange);
-            } catch (err) {
-                console.log("WakeLock failure:", err);
-            }
-        } else if (!this.unsupported) {
-            this.noSleep = new NoSleep();
-            document.addEventListener("click", this.setNoSleep);
+async function setupWakeLock() {
+    // Apple devices can only support a good experience with the wake lock API, which currently does not exist.
+    unsupported = /iPhone|iPod|iPad|Macintosh/i.test(navigator.userAgent);
+    if ("wakeLock" in navigator) {
+        if (unsupported) {
+            unsupported = false;
         }
-    }
 
-    setNoSleep() {
-        if (this.noSleep && !this.noSleep.isEnabled) {
-            this.noSleep.enable();
-        }
-    }
-
-    async onVisibilityChange() {
-        if (this.wakeLock !== null && document.visibilityState === "visible") {
+        try {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            this.wakeLock = await navigator.wakeLock.request("screen");
-        }
-    }
-
-    async beforeDestroy() {
-        if (this.wakeLock) {
-            this.wakeLock.release().then(() => {
-                this.wakeLock = null;
+            wakeLock = await navigator.wakeLock.request("screen");
+            wakeLock.addEventListener("release", () => {
+                wakeLock = null;
             });
-        }
 
-        if (this.noSleep) {
-            this.noSleep.disable();
+            document.addEventListener("visibilityChange", onVisibilityChange);
+        } catch (err) {
+            console.log("WakeLock failure:", err);
         }
-
-        document.removeEventListener("visibilitychange", this.onVisibilityChange);
-        document.removeEventListener("click", this.setNoSleep);
+    } else if (!unsupported) {
+        noSleep = new NoSleep();
+        document.addEventListener("click", setNoSleep);
     }
 }
+
+function setNoSleep() {
+    if (noSleep && !noSleep.isEnabled) {
+        noSleep.enable();
+    }
+}
+
+async function onVisibilityChange() {
+    if (wakeLock !== null && document.visibilityState === "visible") {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.wakeLock = await navigator.wakeLock.request("screen");
+    }
+}
+
+onBeforeUnmount(async () => {
+    if (wakeLock) {
+        wakeLock.release().then(() => {
+            wakeLock = null;
+        });
+    }
+
+    if (noSleep) {
+        noSleep.disable();
+    }
+
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    document.removeEventListener("click", setNoSleep);
+});
 </script>
 
-<style lang="scss">
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 0.5em;
-    height: 100%;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-}
-</style>
+<style lang="scss" scoped></style>
