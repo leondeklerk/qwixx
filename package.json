@@ -1,6 +1,6 @@
 {
-    "name": "vue3-template",
-    "version": "0.0.0",
+    "name": "qwixx",
+    "version": "1.0.0",
     "private": true,
     "type": "module",
     "scripts": {
