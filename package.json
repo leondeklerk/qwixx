@@ -30,8 +30,6 @@
     },
     "devDependencies": {
         "@rushstack/eslint-patch": "1.2.0",
-        "@types/dom-screen-wake-lock": "^1.0.0",
-        "@types/node": "^18.11.10",
         "@vitejs/plugin-vue": "3.2.0",
         "@vue/eslint-config-prettier": "7.0.0",
         "@vue/eslint-config-typescript": "11.0.2",
