@@ -1,11 +1,13 @@
 <template>
-    <QwixxBoard />
+    <div class="p-[0.5%] text-center font-sans">
+        <board-component />
+    </div>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount } from "vue";
 import NoSleep from "nosleep.js";
-import QwixxBoard from "./components/QwixxBoard.vue";
+import BoardComponent from "./components/BoardComponent.vue";
 
 // WakeLock type not properly supported yet
 type WakeLock = any;
