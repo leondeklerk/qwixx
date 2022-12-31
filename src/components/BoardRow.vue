@@ -31,7 +31,7 @@
                     />
                 </div>
                 <div
-                    @click="crossed = !crossed"
+                    @click="onCross"
                     class="shadow-md flex rounded-full h-full bg-white dark:bg-slate-900 aspect-square items-center justify-center"
                     :class="{
                         ' hover:opacity-80 hover:cursor-pointer': !closed,
@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import type { Cell } from "@/types/cell";
 import { CellType } from "@/types/cell";
 import BoardCell from "./BoardCell.vue";
@@ -59,14 +59,16 @@ interface Props {
     color: string;
     finished: boolean;
     lock: boolean;
+    cross: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     readonly: false,
     finished: false,
+    cross: false,
 });
 
-const emit = defineEmits<{ (e: "update:lock", value: boolean): void; (e: "locked", value: boolean): void }>();
+const emit = defineEmits<{ (e: "update:lock", value: boolean): void; (e: "update:cross", value: boolean): void }>();
 
 const locked = computed({
     get() {
@@ -77,7 +79,15 @@ const locked = computed({
     },
 });
 
-const crossed = ref(false);
+const crossed = computed({
+    get() {
+        return props.cross;
+    },
+    set(value: boolean) {
+        emit("update:cross", value);
+    },
+});
+
 const closed = computed(() => crossed.value || locked.value || props.finished);
 
 const lockValidation = computed(() => {
@@ -87,6 +97,12 @@ const lockValidation = computed(() => {
 function onLock() {
     if (!props.finished && !locked.value && lockValidation.value) {
         locked.value = true;
+    }
+}
+
+function onCross() {
+    if (!props.finished && !locked.value) {
+        crossed.value = true;
     }
 }
 </script>

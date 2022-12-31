@@ -30,6 +30,7 @@ export default function useDefaultGenerator() {
             lockCount: lockCount,
             cells: [] as Cell[],
             lock: false,
+            cross: false,
         };
 
         if (i < rowCount / 2) {

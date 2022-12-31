@@ -6,4 +6,5 @@ export interface Row {
     lockCount: number;
     color: string;
     lock: boolean;
+    cross: boolean;
 }
