@@ -56,5 +56,5 @@ jobs:
               with:
                   context: .
                   push: true
-                  tags: leondeklerk/qwixx:latest,leondeklerk/mqtt-stats-aggregator:${{ github.SHA }}
+                  tags: leondeklerk/qwixx:latest,leondeklerk/qwixx:${{ github.SHA }}
                   platforms: "linux/amd64,linux/arm64,linux/arm/v7"
