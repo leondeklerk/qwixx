@@ -1,6 +1,7 @@
 <template>
-    <table class="w-fit table-fixed font-medium">
-        <tbody class="" v-if="board">
+    <div class="w-screen h-screen flex flex-col">
+        <!-- Board -->
+        <div class="w-screen" v-if="board">
             <board-row
                 v-for="(row, index) in board.rows"
                 :lock-count="row.lockCount"
@@ -11,38 +12,43 @@
                 v-model:cross="row.cross"
                 :finished="finished"
             />
-        </tbody>
-    </table>
-    <div class="grid grid-cols-3 w-full my-4 font-semibold">
-        <div class="flex content-center justify-center text-center items-center align-center text-slate-200">
-            <button @click="reset" class="flex rounded-lg bg-red-600 h-fit py-[1vw] w-1/2 text-center justify-center items-center text-[1.4vw]">
-                RESET
-            </button>
         </div>
-        <div class="inline-block content-center justify-center items-center font-medium dark:text-slate-200" v-if="board">
-            <p class="text-[1.2vw]">MISLUKTE WORPEN (-{{ scoreMapping.failPenalty }})</p>
-            <input
-                v-for="(fail, index) in board.fails"
-                :key="index"
-                :disabled="finished"
-                v-model="board.fails[index]"
-                type="checkbox"
-                class="focus:ring-0 focus:ring-offset-0 rounded-sm m-[0.8vw] text-blue-600 dark:bg-slate-500"
-                :class="{
-                    'hover:cursor-pointer': !finished,
-                    'opacity-40': finished,
-                }"
-            />
-        </div>
-        <div class="flex content-center justify-center items-center text-slate-200">
-            <button
-                v-if="!finished"
-                @click="manualFinish = true"
-                class="flex rounded-lg shadow-sm h-fit py-[1vw] bg-blue-600 w-1/2 text-center justify-center items-center text-[1.4vw]"
-            >
-                SCORE
-            </button>
-            <div class="text-black dark:text-slate-200 text-2xl font-medium text-[1.4vw]" v-else>{{ total }}</div>
+        <!-- Controls -->
+        <div class="w-screen flex flex-row mt-4 py-4">
+            <div class="basis-1/4 flex align-center place-content-center text-white">
+                <button @click="reset" class="rounded-lg w-[70%] shadow-sm bg-red-600 text-[1.8vw] hover:opacity-80">RESET</button>
+            </div>
+            <div class="grow flex align-center place-content-center" v-if="board">
+                <div class="flex flex-col place-content-center text-center">
+                    <p class="text-[1.8vw] dark:text-slate-200">MISLUKTE WORPEN (-{{ scoreMapping.failPenalty }})</p>
+                    <div class="flex flex-row place-content-between">
+                        <input
+                            v-for="(fail, index) in board.fails"
+                            :key="index"
+                            :disabled="finished"
+                            v-model="board.fails[index]"
+                            type="checkbox"
+                            class="focus:ring-0 focus:ring-offset-0 rounded-sm w-[1.8vw] h-[1.8vw] m-[0.8vw] text-blue-600 dark:bg-slate-500"
+                            :class="{
+                                'cursor-pointer': !finished,
+                                'opacity-40': finished,
+                                'hover:opacity-60': !finished && !fail,
+                                'hover:opacity-90': !finished && fail,
+                            }"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="basis-1/4 flex align-center place-content-center text-black text-center">
+                <button
+                    v-if="!finished"
+                    @click="manualFinish = true"
+                    class="text-white rounded-lg w-[70%] shadow-sm bg-blue-600 text-[1.8vw] hover:opacity-80"
+                >
+                    SCORE
+                </button>
+                <div class="text-[1.8vw] self-center font-medium dark:text-slate-200" v-else>{{ total }}</div>
+            </div>
         </div>
     </div>
 </template>

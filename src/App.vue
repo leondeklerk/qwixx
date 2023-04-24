@@ -1,5 +1,5 @@
 <template>
-    <div class="p-[0.5%] text-center font-sans">
+    <div class="w-full h-full">
         <board-component />
     </div>
 </template>

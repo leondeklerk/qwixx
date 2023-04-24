@@ -1,18 +1,18 @@
 <template>
-    <div class="h-full items-center justify-center flex py-[10%] px-[10%]" :class="classObject">
+    <div class="flex h-full justify-center py-[1vw]" :class="classObject">
         <!-- A field can either be selected (represented with an X), or display its value -->
         <div
             v-if="type === CellType.Field"
             @click="onClick"
-            class="shadow-md w-full h-full flex py-[5%] bg-white dark:bg-slate-900 rounded-lg items-center justify-center opacity-90"
+            class="flex min-w-[90%] bg-white dark:bg-slate-900 rounded-lg text-center align-center items-center place-content-center text-[1.8vw] opacity-90"
             :class="{
-                'hover:opacity-80 hover:cursor-pointer': !value && validated && !closed,
-                'opacity-80': !value && !validated,
+                'hover:opacity-80 hover:dark:opacity-[70%] hover:cursor-pointer': !value && validated && !closed,
+                'opacity-[70%]': !value && !validated,
                 'text-slate-700 opacity-90': value,
             }"
         >
-            <i v-if="value" class="fa-solid fa-x text-[2vw] dark:text-slate-300" />
-            <span v-else class="text-[1.9vw]" :class="{ 'opacity-50': !validated }">{{ displayValue }}</span>
+            <i v-if="value" class="fa-solid fa-x dark:text-slate-300" />
+            <span v-else :class="{ 'opacity-50': !validated }">{{ displayValue }}</span>
         </div>
     </div>
 </template>

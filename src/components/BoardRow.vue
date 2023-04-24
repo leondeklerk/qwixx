@@ -1,47 +1,53 @@
 <template>
-    <tr class="h-full">
-        <td class="p-0 h-full select-none" v-for="(cell, index) in cells" :key="index">
-            <board-cell
-                v-if="cell.type === CellType.Field"
-                :type="cell.type"
-                :closed="closed"
-                v-model="cell.checked"
-                :display-value="cell.displayValue"
-                :readonly="readonly"
-                :color="cell.color || color"
-                :cells="cells"
-                :index="index"
-            />
-        </td>
-        <td class="p-0 h-full border-l border-black" :class="color">
-            <div class="flex py-[12%] h-full w-full place-content-evenly items-center opacity-90">
-                <div
-                    @click="onLock"
-                    class="shadow-md flex rounded-full h-full bg-white dark:bg-slate-900 aspect-square items-center justify-center"
-                    :class="{
-                        'hover:opacity-80 hover:cursor-pointer': !closed && lockValidation,
-                        'opacity-80 cursor-default': !lockValidation && !locked,
-                    }"
-                >
-                    <i v-if="locked" class="fa-solid fa-lock aspect-square text-[1.7vw] text-[#232327] dark:text-white" />
-                    <i
-                        v-else
-                        class="fa-solid fa-lock-open text-[1.7vw] text-[#232327] opacity-90 dark:text-white"
-                        :class="{ 'opacity-50': !lockValidation }"
-                    />
-                </div>
-                <div
-                    @click="onCross"
-                    class="shadow-md flex rounded-full h-full bg-white dark:bg-slate-900 aspect-square items-center justify-center"
-                    :class="{
-                        ' hover:opacity-80 hover:cursor-pointer': !closed,
-                    }"
-                >
-                    <i class="fa-solid fa-slash text-[1.7vw] text-[#232327] dark:text-white" />
-                </div>
+    <div class="flex" :class="color">
+        <div class="grow grid grid-cols-11">
+            <div v-for="(cell, index) in cells" :key="index" class="">
+                <board-cell
+                    v-if="cell.type === CellType.Field"
+                    :type="cell.type"
+                    :closed="closed"
+                    v-model="cell.checked"
+                    :display-value="cell.displayValue"
+                    :readonly="readonly"
+                    :color="cell.color || color"
+                    :cells="cells"
+                    :index="index"
+                />
             </div>
-        </td>
-    </tr>
+        </div>
+        <div class="flex border border-black h-100"></div>
+        <div class="px-[0.5vw] py-[1vw] flex place-content-center align-center items-center">
+            <span
+                @click="onLock"
+                class="fa-stack text-[1.8vw]"
+                :class="{
+                    'hover:opacity-80 dark:hover:opacity-[70%] hover:cursor-pointer': !closed && lockValidation,
+                    'opacity-[70%] cursor-default': !lockValidation && !locked,
+                }"
+            >
+                <i class="fa-solid fa-circle fa-stack-2x text-white dark:text-[#232327] opacity-90"></i>
+                <i v-if="locked" class="fa-solid fa-lock fa-stack-1x text-black dark:text-slate-200" />
+                <i v-else class="fa-solid fa-lock-open fa-stack-1x text-black dark:text-slate-200" />
+            </span>
+        </div>
+        <div class="px-[0.5vw] py-[1vw] flex place-content-center align-center items-center">
+            <span
+                @click="onCross"
+                class="fa-stack text-[1.8vw]"
+                :class="{
+                    ' hover:opacity-80 hover:cursor-pointer': !closed,
+                }"
+            >
+                <i class="fa-solid fa-circle fa-stack-2x text-white dark:text-[#232327] opacity-90"></i>
+                <i
+                    class="fa-solid fa-xmark fa-stack-1x text-black dark:text-slate-200"
+                    :class="{
+                        'opacity-[50%]': closed,
+                    }"
+                ></i>
+            </span>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
