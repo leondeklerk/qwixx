@@ -14,5 +14,5 @@ export const useBoardStore = defineStore(
     },
     {
         persist: true,
-    }
+    },
 );
