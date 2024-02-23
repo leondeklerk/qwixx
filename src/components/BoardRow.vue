@@ -1,12 +1,19 @@
 <template>
-    <div class="flex" :class="color">
+    <div
+        class="flex"
+        :class="color"
+    >
         <div class="grow grid grid-cols-11">
-            <div v-for="(cell, index) in cells" :key="index" class="">
+            <div
+                v-for="(cell, index) in cells"
+                :key="index"
+                class=""
+            >
                 <board-cell
                     v-if="cell.type === CellType.Field"
+                    v-model="cell.checked"
                     :type="cell.type"
                     :closed="closed"
-                    v-model="cell.checked"
                     :display-value="cell.displayValue"
                     :readonly="readonly"
                     :color="cell.color || color"
@@ -18,25 +25,31 @@
         <div class="flex border border-black h-100"></div>
         <div class="px-[0.5vw] py-[1vw] flex place-content-center align-center items-center">
             <span
-                @click="onLock"
                 class="fa-stack text-[1.8vw]"
                 :class="{
                     'hover:opacity-80 dark:hover:opacity-[70%] hover:cursor-pointer': !closed && lockValidation,
                     'opacity-[70%] cursor-default': !lockValidation && !locked,
                 }"
+                @click="onLock"
             >
                 <i class="fa-solid fa-circle fa-stack-2x text-white dark:text-[#232327] opacity-90"></i>
-                <i v-if="locked" class="fa-solid fa-lock fa-stack-1x text-black dark:text-slate-200" />
-                <i v-else class="fa-solid fa-lock-open fa-stack-1x text-black dark:text-slate-200" />
+                <i
+                    v-if="locked"
+                    class="fa-solid fa-lock fa-stack-1x text-black dark:text-slate-200"
+                />
+                <i
+                    v-else
+                    class="fa-solid fa-lock-open fa-stack-1x text-black dark:text-slate-200"
+                />
             </span>
         </div>
         <div class="px-[0.5vw] py-[1vw] flex place-content-center align-center items-center">
             <span
-                @click="onCross"
                 class="fa-stack text-[1.8vw]"
                 :class="{
                     ' hover:opacity-80 hover:cursor-pointer': !closed,
                 }"
+                @click="onCross"
             >
                 <i class="fa-solid fa-circle fa-stack-2x text-white dark:text-[#232327] opacity-90"></i>
                 <i

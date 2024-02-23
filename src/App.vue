@@ -36,7 +36,8 @@ async function setupWakeLock() {
 
             document.addEventListener("visibilityChange", onVisibilityChange);
         } catch (err) {
-            console.log("WakeLock failure:", err);
+            // eslint-disable-next-line no-console
+            console.info("WakeLock failure:", err);
         }
     } else if (!unsupported) {
         noSleep = new NoSleep();
