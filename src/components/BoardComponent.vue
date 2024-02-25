@@ -12,13 +12,13 @@
                 v-model:cross="row.cross"
                 :lock-count="row.lockCount"
                 :cells="row.cells"
-                :color="row.color"
+                :color="getColor(row, index)"
                 :finished="finished"
             />
         </div>
         <!-- Controls -->
         <div class="w-screen flex flex-row mt-4 py-4">
-            <div class="basis-1/4 flex align-center place-content-center text-white">
+            <div class="basis-1/5 flex align-center place-content-center text-white">
                 <button
                     class="rounded-lg w-[70%] shadow-sm bg-red-600 text-[1.8vw] hover:opacity-80"
                     @click="reset"
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="basis-1/4 flex align-center place-content-center text-black text-center">
+            <div class="basis-1/5 flex align-center place-content-center text-black text-center">
                 <button
                     v-if="!finished"
                     class="text-white rounded-lg w-[70%] shadow-sm bg-blue-600 text-[1.8vw] hover:opacity-80"
@@ -65,6 +65,14 @@
                     {{ total }}
                 </div>
             </div>
+            <div class="flex align-center place-content-center text-center mr-9">
+                <div class="px-[0.5vw] py-[1vw] flex place-content-center align-center items-center">
+                    <i
+                        class="fa-solid fa-circle-question fa-2xl text-slate-600 dark:text-slate-400 hover:text-slate-500 hover:dark-text-slate-400"
+                        @click="open"
+                    ></i>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -75,6 +83,9 @@ import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import BoardRow from "./BoardRow.vue";
 import useDefaultGenerator, { scoreMapping } from "./boards/default";
+import type { Row } from "@/types/row";
+import { useModal } from "vue-final-modal";
+import ScoresModal from "./ScoresModal.vue";
 
 const manualFinish = ref(false);
 const store = useBoardStore();
@@ -106,7 +117,7 @@ const total = computed(() => {
 const finished = computed(() => {
     return (
         manualFinish.value ||
-        board.value?.rows.filter((row) => row.lock).length === board.value?.lockFinishCount ||
+        board.value?.rows.filter((row) => row.lock || row.cross).length === board.value?.lockFinishCount ||
         board.value?.fails.filter((fail) => fail).length === board.value?.fails.length
     );
 });
@@ -115,4 +126,41 @@ function reset() {
     manualFinish.value = false;
     store.setBoard(useDefaultGenerator());
 }
+
+function getColor(row: Row, index: number) {
+    if (row.cross || row.lock) {
+        if (index % 2 === 0) {
+            return "bg-slate-500";
+        } else {
+            return "bg-slate-600";
+        }
+    }
+    return row.color;
+}
+
+const scoreText = computed(() => {
+    const rows: string[] = [];
+    rows.push(`<div class="flex"><p class="flex-auto">Crosses</p><p class="flex-auto">Score</p></div>`);
+    for (const mappingKey of Object.keys(scoreMapping)) {
+        if (mappingKey === "failPenalty") {
+            continue;
+        }
+        // @ts-ignore
+        rows.push(`<div class="flex"><p class="flex-auto">${mappingKey}</p><p class="flex-auto">${scoreMapping[mappingKey]}</p></div>`);
+    }
+    return rows;
+});
+
+const { open, close } = useModal({
+    component: ScoresModal,
+    attrs: {
+        title: "Scores",
+        onClose: () => {
+            close();
+        },
+    },
+    slots: {
+        default: scoreText.value.join("\n"),
+    },
+});
 </script>

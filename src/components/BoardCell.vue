@@ -20,7 +20,7 @@
             />
             <span
                 v-else
-                :class="{ 'opacity-50': !validated }"
+                :class="{ 'opacity-50': !validated, 'text-slate-400': closed }"
                 >{{ displayValue }}</span
             >
         </div>

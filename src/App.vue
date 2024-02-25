@@ -1,6 +1,7 @@
 <template>
     <div class="w-full h-full">
         <board-component />
+        <ModalsContainer />
     </div>
 </template>
 
@@ -8,27 +9,19 @@
 import { onBeforeUnmount } from "vue";
 import NoSleep from "nosleep.js";
 import BoardComponent from "./components/BoardComponent.vue";
+import { ModalsContainer } from "vue-final-modal";
 
 // WakeLock type not properly supported yet
 type WakeLock = any;
 
 let wakeLock: WakeLock | null = null;
 let noSleep: NoSleep | null = null;
-let unsupported = false;
 
 setupWakeLock();
 
 async function setupWakeLock() {
-    // Apple devices can only support a good experience with the wake lock API, which currently does not exist.
-    unsupported = /iPhone|iPod|iPad|Macintosh/i.test(navigator.userAgent);
-    if ("wakeLock" in navigator) {
-        if (unsupported) {
-            unsupported = false;
-        }
-
+    if (navigator.wakeLock) {
         try {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             wakeLock = await navigator.wakeLock.request("screen");
             wakeLock.addEventListener("release", () => {
                 wakeLock = null;
@@ -39,7 +32,7 @@ async function setupWakeLock() {
             // eslint-disable-next-line no-console
             console.info("WakeLock failure:", err);
         }
-    } else if (!unsupported) {
+    } else {
         noSleep = new NoSleep();
         document.addEventListener("click", setNoSleep);
     }
@@ -53,9 +46,7 @@ function setNoSleep() {
 
 async function onVisibilityChange() {
     if (wakeLock !== null && document.visibilityState === "visible") {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        this.wakeLock = await navigator.wakeLock.request("screen");
+        wakeLock = await navigator.wakeLock.request("screen");
     }
 }
 
