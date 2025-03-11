@@ -22,7 +22,7 @@
                 />
             </div>
         </div>
-        <div class="flex border border-black h-100"></div>
+        <div class="flex border border-black"></div>
         <div class="px-[0.5vw] py-[1vw] flex place-content-center align-center items-center">
             <span
                 class="fa-stack text-[1.8vw]"
@@ -76,9 +76,9 @@ interface Props {
     lockCount: number;
     readonly?: boolean;
     color: string;
-    finished: boolean;
+    finished?: boolean;
     lock: boolean;
-    cross: boolean;
+    cross?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

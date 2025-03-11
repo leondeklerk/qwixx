@@ -1,29 +1,30 @@
-@import './base.css';
-@import "/node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
-@import "/node_modules/@fortawesome/fontawesome-free/css/brands.css";
-@import "/node_modules/@fortawesome/fontawesome-free/css/solid.css";
+@import "@fortawesome/fontawesome-free/css/fontawesome.css" layer(vendor);
+@import "@fortawesome/fontawesome-free/css/brands.css" layer(vendor);
+@import "@fortawesome/fontawesome-free/css/solid.css" layer(vendor);
+
+@import "./base.css";
 
 .red {
-	background-color: #e7153b;
-	color: #e7153b;
+    background-color: #e7153b;
+    color: #e7153b;
 }
 
 .blue {
-	background-color: #1a61b3;
-	color: #1a61b3;
+    background-color: #1a61b3;
+    color: #1a61b3;
 }
 
 .green {
-	background-color: #3cac2c;
-	color: #3cac2c;
+    background-color: #3cac2c;
+    color: #3cac2c;
 }
 
 .yellow {
-	background-color: #ffc400;
-	color: #b9920f;
+    background-color: #ffc400;
+    color: #b9920f;
 }
 
 .white {
-	background-color: white;
-	color: white;
+    background-color: white;
+    color: white;
 }

@@ -11,10 +11,7 @@ import NoSleep from "nosleep.js";
 import BoardComponent from "./components/BoardComponent.vue";
 import { ModalsContainer } from "vue-final-modal";
 
-// WakeLock type not properly supported yet
-type WakeLock = any;
-
-let wakeLock: WakeLock | null = null;
+let wakeLock: WakeLockSentinel | null = null;
 let noSleep: NoSleep | null = null;
 
 setupWakeLock();
@@ -29,7 +26,6 @@ async function setupWakeLock() {
 
             document.addEventListener("visibilityChange", onVisibilityChange);
         } catch (err) {
-            // eslint-disable-next-line no-console
             console.info("WakeLock failure:", err);
         }
     } else {

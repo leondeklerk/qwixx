@@ -100,7 +100,7 @@ function onClick() {
 }
 
 const classObject = computed(() => {
-    let result = {
+    const result = {
         [props.color]: props.color,
     };
     return result;

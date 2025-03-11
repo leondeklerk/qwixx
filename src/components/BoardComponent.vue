@@ -145,7 +145,8 @@ const scoreText = computed(() => {
         if (mappingKey === "failPenalty") {
             continue;
         }
-        // @ts-ignore
+
+        // @ts-expect-error - Object key is a string
         rows.push(`<div class="flex"><p class="flex-auto">${mappingKey}</p><p class="flex-auto">${scoreMapping[mappingKey]}</p></div>`);
     }
     return rows;

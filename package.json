@@ -1,51 +1,51 @@
 {
-  "name": "qwixx",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "bunx --bun vite",
-    "build": "bun run lint && bun run type-check && bun run build-only",
-    "build-only": "bunx --bun vite build",
-    "lint": "eslint --ext .ts,.vue,.js --max-warnings 0 .",
-    "lint:fix": "eslint --ext .ts,.vue,.js --fix .",
-    "prepare": "husky",
-    "preview": "bunx --bun vite preview",
-    "test:unit": "bunx --bun vitest",
-    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false "
-  },
-  "lint-staged": {
-    "*.{js,ts,vue}": "eslint --ext .ts,.vue,.js --max-warnings 0"
-  },
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "6.7.2",
-    "@tailwindcss/forms": "0.5.10",
-    "nosleep.js": "0.12.0",
-    "pinia": "2.3.1",
-    "pinia-plugin-persistedstate": "3.2.3",
-    "vue": "3.5.13",
-    "vue-final-modal": "4.5.5",
-    "vue-router": "4.5.0",
-    "vue-toast-notification": "3.1.3"
-  },
-  "devDependencies": {
-    "@rushstack/eslint-patch": "1.10.5",
-    "@tsconfig/node20": "20.1.4",
-    "@types/bun": "1.2.4",
-    "@vitejs/plugin-vue": "5.2.1",
-    "@vue/eslint-config-prettier": "9.0.0",
-    "@vue/eslint-config-typescript": "13.0.0",
-    "@vue/tsconfig": "0.7.0",
-    "autoprefixer": "10.4.21",
-    "eslint": "8.57.1",
-    "eslint-plugin-vue": "9.33.0",
-    "husky": "9.1.7",
-    "lint-staged": "15.4.3",
-    "postcss": "8.5.3",
-    "prettier": "3.5.3",
-    "tailwindcss": "3.4.17",
-    "typescript": "5.8.2",
-    "vite": "5.4.14",
-    "vue-tsc": "2.2.8"
-  }
+    "name": "qwixx",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": " vite",
+        "build": "bun run lint && bun run type-check && bun run build-only",
+        "build-only": "vite build",
+        "lint": "eslint --max-warnings 0 .",
+        "lint:fix": "eslint --fix .",
+        "prepare": "husky",
+        "preview": "vite preview",
+        "test:unit": "vitest",
+        "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
+    },
+    "lint-staged": {
+        "*.{js,ts,vue}": "eslint --max-warnings 0"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "6.7.2",
+        "@tailwindcss/forms": "0.5.10",
+        "nosleep.js": "0.12.0",
+        "pinia": "3.0.1",
+        "pinia-plugin-persistedstate": "4.2.0",
+        "vue": "3.5.13",
+        "vue-final-modal": "4.5.5",
+        "vue-router": "4.5.0",
+        "vue-toast-notification": "3.1.3"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "4.0.12",
+        "@tsconfig/node22": "22.0.0",
+        "@types/node": "22.13.10",
+        "@vitejs/plugin-vue": "5.2.1",
+        "@vue/eslint-config-prettier": "10.2.0",
+        "@vue/eslint-config-typescript": "14.5.0",
+        "@vue/tsconfig": "0.7.0",
+        "autoprefixer": "10.4.21",
+        "eslint": "9.22.0",
+        "eslint-plugin-vue": "10.0.0",
+        "husky": "9.1.7",
+        "lint-staged": "15.4.3",
+        "prettier": "3.5.3",
+        "tailwindcss": "4.0.12",
+        "typescript": "5.8.2",
+        "vite": "6.2.1",
+        "vite-plugin-vue-devtools": "7.7.2",
+        "vue-tsc": "2.2.8"
+    }
 }
