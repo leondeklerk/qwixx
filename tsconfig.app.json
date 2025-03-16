@@ -22,6 +22,7 @@
         },
         "preserveValueImports": false,
         "importsNotUsedAsValues": "remove",
-        "verbatimModuleSyntax": true
+        "verbatimModuleSyntax": true,
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
     }
 }
