@@ -43,7 +43,7 @@
         "prettier": "3.6.2",
         "tailwindcss": "4.1.11",
         "typescript": "5.8.3",
-        "vite": "7.0.7",
+        "vite": "7.0.8",
         "vite-plugin-vue-devtools": "7.7.7",
         "vue-tsc": "3.0.1"
     }
