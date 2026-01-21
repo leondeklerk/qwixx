@@ -25,7 +25,7 @@ export default function useDefaultGenerator() {
 
     for (let i = 0; i < rowCount; i++) {
         const row = {
-            color: colorMapping[i],
+            color: colorMapping[i] ?? "black",
             score: 0,
             lockCount: lockCount,
             cells: [] as Cell[],
