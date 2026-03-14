@@ -16,17 +16,10 @@
 	"assignees": [
 		"developer@leondeklerk.com"
 	],
+	"schedule": [
+		"before 5am on Monday"
+	],
 	"packageRules": [
-		{
-			"description": "Automerge non-major updates",
-			"matchUpdateTypes": [
-				"minor",
-				"patch",
-				"pin"
-			],
-			"automerge": true,
-			"platformAutomerge": true
-		},
 		{
 			"description": "Non-major dependencies",
 			"matchUpdateTypes": [
@@ -34,8 +27,36 @@
 				"patch",
 				"pin"
 			],
-			"groupName": "Non-major dependencies",
-			"groupSlug": "non-major"
+			"automerge": true,
+			"platformAutomerge": true,
+			"groupName": "Non-major updates",
+			"groupSlug": "non-major-updates",
+			"enabled": true
+		},
+		{
+			"description": "Lock file maintenance",
+			"matchUpdateTypes": [
+				"lockFileMaintenance"
+			],
+			"automerge": true,
+			"platformAutomerge": true,
+			"groupName": "Lock file maintenance",
+			"groupSlug": "lock-file-maintenance",
+			"enabled": true
+		},
+		{
+			"description": "Security patches",
+			"matchUpdateTypes": [
+				"patch",
+				"minor"
+			],
+			"matchVulnerabilitySeverity": [
+				"critical",
+				"high",
+				"moderate"
+			],
+			"automerge": true,
+			"platformAutomerge": true
 		},
 		{
 			"description": "Major dependencies",
