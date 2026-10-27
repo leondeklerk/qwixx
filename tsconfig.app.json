@@ -4,11 +4,10 @@
     "exclude": ["src/**/__tests__/*"],
     "compilerOptions": {
         "composite": true,
-        "baseUrl": ".",
         "target": "ESNext",
         "useDefineForClassFields": true,
         "module": "ESNext",
-        "moduleResolution": "Node",
+        "moduleResolution": "bundler",
         "strict": true,
         "jsx": "preserve",
         "sourceMap": true,
